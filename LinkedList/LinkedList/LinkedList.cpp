@@ -3,12 +3,13 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <map>
 
 struct Node
 {
     int data;
     struct Node* next;
-}*head = NULL;
+}*head = NULL,*head2 = NULL, *head3 = NULL;
 
 void create(int a[], int n)
 {
@@ -27,8 +28,25 @@ void create(int a[], int n)
         last->next = t;
         last = t;
     }
+}
 
+void create2(int a[], int n)
+{
+    int i;
+    struct Node* t, * last;
 
+    head2 = (struct Node*)malloc(sizeof(struct Node));
+    head2->data = a[0];
+    last = head2;
+
+    for (i = 1; i < n; i++)
+    {
+        t = (struct Node*)malloc(sizeof(struct Node));
+        t->data = a[i];
+        t->next = NULL;
+        last->next = t;
+        last = t;
+    }
 }
 
 void display(struct Node *p)
@@ -218,7 +236,7 @@ void insertingInSortedLL(struct Node* p, int ele)
 
 
 
-        //display(head);
+        display(head);
     }
 }
 
@@ -252,13 +270,151 @@ void deleteNode(struct Node* head, int ele)
 
 }
 
+bool checkIfLinkedListIsSorted(struct Node* head) 
+{
+    struct Node *curr = head, *prev = head;
+    while (curr != NULL) 
+    {
+        if (prev->data > curr->data) return false;
+        
+        prev = curr;
+        curr = curr->next;
+    }
+
+    return true;
+}
+
+void removeDuplicate(struct Node* head)
+{
+    struct Node* curr = head->next, *prev = head;
+    
+    while (curr != NULL)
+    {
+        if (prev->data == curr->data)
+        {
+            prev->next = curr->next;
+            delete curr;
+            curr = prev->next;
+        }
+        else
+        {
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
+    display(head);
+}
+
+void reverseLinkedList(struct Node** head)
+{
+    struct Node* current = *head, * prev = NULL, * next = NULL;
+    while (current != NULL)
+    {
+        next = current->next;
+        // Reverse current node's pointer
+        current->next = prev;
+        // Move pointers one position ahead.
+        prev = current;
+        current = next;
+    }
+
+    *head = prev;
+}
+
+void concat(struct Node** head, struct Node** head2)
+{
+    struct Node* curr = *head, * curr2 = *head2;
+    head3 = *head;
+
+    while (curr->next != NULL)
+    {
+        curr = curr->next;
+    }
+
+    curr->next = curr2;
+
+        
+}
+
+void merge(struct Node** head, struct Node** head2)
+{
+    struct Node* last;
+    struct Node* p = *head;
+    struct Node* q = *head2;
+
+    if (p->data < q->data)
+    {
+        head3 = last = p;
+        p = p->next;
+        head3->next = NULL;
+    }
+    else
+    {
+        head3 = last = q;
+        q = q->next;
+        head3->next = NULL;
+    }
+
+    while (p && q)
+    {
+        if (p->data < q->data)
+        {
+            last->next = p;
+            last = p;
+            p = p->next;
+            last->next = NULL;
+        }
+        else
+        {
+            last->next = q;
+            last = q;
+            q = q->next;
+            last->next = NULL;
+        }
+
+    }
+
+    if (p) last->next = p;
+    if (q) last->next = q;
+}
+
+bool loop(struct Node** head) {
+    struct Node* curr = *head, * curr2 = *head;
+
+    while (curr && curr2)
+    {
+        curr = curr->next;
+        curr2 = curr2->next->next;
+
+        while (curr->next == curr2->next)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 int main()
 {
-    int a[] = { 3,5,7,10,15 };
-
-    createInsert(a, 5);
-    insertingInSortedLL(head, 4);
-    deleteNode(head,4);
+    int a[] = { 10, 30, 50, 70, 90, 110 };
+    int b[] = { 20, 40, 60, 80, 100, 120 };
+    create(a, 6);
+    create2(b, 6);
+    //insertingInSortedLL(head, 20);
+    //deleteNode(head,4);
+    //bool isSorted = checkIfLinkedListIsSorted(head);
+    //isSorted ? std::cout << "Sorted" : std::cout << "Not sorted";
+    //removeDuplicate(head);
+    //reverseLinkedList(&head);
+    //concat(&head, &head2);
+    //merge(&head, &head2);
+    //display(head3);
+    //display(head2);
+    bool isLoop = loop(&head);
+    if (isLoop) std::cout << "Is Looped";
+    else std::cout << "Not Looped";
 }
 
 
